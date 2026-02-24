@@ -20,11 +20,11 @@
     <a href="https://styleci.io/repos/48796179">
         <img src="https://styleci.io/repos/48796179/shield" alt="StyleCI">
     </a>
-    <a href="https://packagist.org/packages/encore/laravel-admin">
-        <img src="https://img.shields.io/packagist/l/encore/laravel-admin.svg?maxAge=2592000&&style=flat-square" alt="Packagist">
+    <a href="https://packagist.org/packages/volareinc/laravel-admin">
+        <img src="https://img.shields.io/packagist/l/volareinc/laravel-admin.svg?maxAge=2592000&&style=flat-square" alt="Packagist">
     </a>
-    <a href="https://packagist.org/packages/encore/laravel-admin">
-        <img src="https://img.shields.io/packagist/dt/encore/laravel-admin.svg?style=flat-square" alt="Total Downloads">
+    <a href="https://packagist.org/packages/volareinc/laravel-admin">
+        <img src="https://img.shields.io/packagist/dt/volareinc/laravel-admin.svg?style=flat-square" alt="Total Downloads">
     </a>
     <a href="https://github.com/z-song/laravel-admin">
         <img src="https://img.shields.io/badge/Awesome-Laravel-brightgreen.svg?style=flat-square" alt="Awesome Laravel">
@@ -63,7 +63,7 @@ Installation
 First, install laravel 5.5, and make sure that the database connection settings are correct.
 
 ```
-composer require encore/laravel-admin
+composer require volareinc/laravel-admin
 ```
 
 Then run these commands to publish assets and config：

@@ -1,11 +1,15 @@
 {
-    "name": "encore/laravel-admin",
-    "description": "laravel admin",
+    "name": "volareinc/laravel-admin",
+    "description": "laravel admin (fork of https://github.com/z-song/laravel-admin)",
     "type": "library",
     "keywords": ["laravel", "admin", "grid", "form"],
-    "homepage": "https://github.com/z-song/laravel-admin",
+    "homepage": "https://github.com/volareinc/laravel-admin",
     "license": "MIT",
     "authors": [
+        {
+            "name": "volareinc",
+            "homepage": "https://github.com/volareinc"
+        },
         {
             "name": "zsong",
             "email": "zosong@126.com"
