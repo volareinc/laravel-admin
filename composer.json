@@ -23,7 +23,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "intervention/image": "^2.7",
-        "orchestra/testbench": "^9.0|^10.0",
+        "orchestra/testbench-browser-kit": "^9.0|^10.0",
         "phpunit/phpunit": "^10.5|^11.0"
     },
     "autoload": {
@@ -37,10 +37,13 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Models\\": "tests/models",
-            "Tests\\Controllers\\": "tests/controllers"
+            "Tests\\Controllers\\": "tests/controllers",
+            "Tests\\Factories\\": "tests/factories",
+            "Tests\\Seeds\\": "tests/seeds"
         },
         "classmap": [
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/support/Controller.php"
         ]
     },
     "scripts": {
