@@ -16,17 +16,15 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "symfony/dom-crawler": "~3.1|~4.0|~5.0",
-        "laravel/framework": ">=5.5",
-        "doctrine/dbal": "2.*|3.*"
+        "php": "^8.2",
+        "symfony/dom-crawler": "^6.4|^7.0",
+        "laravel/framework": "^11.0|^12.0"
     },
     "require-dev": {
-        "laravel/laravel": ">=5.5",
-        "fzaninotto/faker": "~1.4",
-        "intervention/image": "~2.3",
-        "laravel/browser-kit-testing": "^6.0",
-        "spatie/phpunit-watcher": "^1.22.0"
+        "fakerphp/faker": "^1.23",
+        "intervention/image": "^2.7",
+        "orchestra/testbench-browser-kit": "^9.0|^10.0",
+        "phpunit/phpunit": "^10.5|^11.0"
     },
     "autoload": {
         "psr-4": {
@@ -39,18 +37,21 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Models\\": "tests/models",
-            "Tests\\Controllers\\": "tests/controllers"
+            "Tests\\Controllers\\": "tests/controllers",
+            "Tests\\Factories\\": "tests/factories",
+            "Tests\\Seeds\\": "tests/seeds"
         },
         "classmap": [
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/support/Controller.php"
         ]
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"
     },
     "suggest": {
-        "intervention/image": "Required to handling and manipulation upload images (~2.3).",
-        "spatie/eloquent-sortable": "Required to built orderable gird."
+        "intervention/image": "Required to handling and manipulation upload images (^2.7). Version 3 is not supported yet.",
+        "spatie/eloquent-sortable": "Required to built orderable grid."
     },
     "extra": {
         "laravel": {

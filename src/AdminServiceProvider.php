@@ -36,11 +36,11 @@ class AdminServiceProvider extends ServiceProvider
     ];
 
     /**
-     * The application's route middleware.
+     * The application's route middleware aliases.
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
         'admin.auth'       => Middleware\Authenticate::class,
         'admin.pjax'       => Middleware\Pjax::class,
         'admin.log'        => Middleware\LogOperation::class,
@@ -116,11 +116,7 @@ class AdminServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__.'/../config' => config_path()], 'laravel-admin-config');
-            if (version_compare($this->app->version(), '9.0.0', '>=')) {
-                $this->publishes([__DIR__.'/../resources/lang' => base_path('lang')], 'laravel-admin-lang');
-            } else {
-                $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'laravel-admin-lang');
-            }
+            $this->publishes([__DIR__.'/../resources/lang' => base_path('lang')], 'laravel-admin-lang');
             $this->publishes([__DIR__.'/../database/migrations' => database_path('migrations')], 'laravel-admin-migrations');
             $this->publishes([__DIR__.'/../resources/assets' => public_path('vendor/laravel-admin')], 'laravel-admin-assets');
         }
@@ -198,7 +194,7 @@ class AdminServiceProvider extends ServiceProvider
     protected function registerRouteMiddleware()
     {
         // register route middleware.
-        foreach ($this->routeMiddleware as $key => $middleware) {
+        foreach ($this->middlewareAliases as $key => $middleware) {
             app('router')->aliasMiddleware($key, $middleware);
         }
 
