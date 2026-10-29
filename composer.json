@@ -18,17 +18,21 @@
     "require": {
         "php": "^8.2",
         "symfony/dom-crawler": "^6.4|^7.0",
-        "laravel/framework": "^11.0|^12.0"
+        "laravel/framework": "^10.30|^11.0|^12.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "intervention/image": "^2.7",
-        "orchestra/testbench-browser-kit": "^9.0|^10.0",
+        "orchestra/testbench-browser-kit": "^8.0|^9.0|^10.0",
         "phpunit/phpunit": "^10.5|^11.0"
+    },
+    "replace": {
+        "jxlwqq/json-editor": "1.0.8"
     },
     "autoload": {
         "psr-4": {
-            "Encore\\Admin\\": "src/"
+            "Encore\\Admin\\": "src/",
+            "Jxlwqq\\JsonEditor\\": "extensions/json-editor/src/"
         },
         "files": [
             "src/helpers.php"
@@ -56,7 +60,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Encore\\Admin\\AdminServiceProvider"
+                "Encore\\Admin\\AdminServiceProvider",
+                "Jxlwqq\\JsonEditor\\JsonEditorServiceProvider"
             ],
             "aliases": {
                 "Admin": "Encore\\Admin\\Facades\\Admin"
