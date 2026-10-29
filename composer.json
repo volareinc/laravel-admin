@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "intervention/image": "^2.7|^3.0",
+        "intervention/image": "^2.7",
         "orchestra/testbench": "^9.0|^10.0",
         "phpunit/phpunit": "^10.5|^11.0"
     },
@@ -48,7 +48,7 @@
         "test": "./vendor/bin/phpunit"
     },
     "suggest": {
-        "intervention/image": "Required to handling and manipulation upload images (^2.7|^3.0).",
+        "intervention/image": "Required to handling and manipulation upload images (^2.7). Version 3 is not supported yet.",
         "spatie/eloquent-sortable": "Required to built orderable grid."
     },
     "extra": {
