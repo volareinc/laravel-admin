@@ -18,13 +18,12 @@
     "require": {
         "php": "^8.2",
         "symfony/dom-crawler": "^6.4|^7.0",
-        "laravel/framework": "^10.0|^11.0|^12.0",
-        "doctrine/dbal": "^3.6|^4.0"
+        "laravel/framework": "^10.30|^11.0|^12.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "intervention/image": "^2.7|^3.0",
-        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "intervention/image": "^2.7",
+        "orchestra/testbench-browser-kit": "^8.0|^9.0|^10.0",
         "phpunit/phpunit": "^10.5|^11.0"
     },
     "replace": {
@@ -42,17 +41,20 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Models\\": "tests/models",
-            "Tests\\Controllers\\": "tests/controllers"
+            "Tests\\Controllers\\": "tests/controllers",
+            "Tests\\Factories\\": "tests/factories",
+            "Tests\\Seeds\\": "tests/seeds"
         },
         "classmap": [
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/support/Controller.php"
         ]
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"
     },
     "suggest": {
-        "intervention/image": "Required to handling and manipulation upload images (^2.7|^3.0).",
+        "intervention/image": "Required to handling and manipulation upload images (^2.7). Version 3 is not supported yet.",
         "spatie/eloquent-sortable": "Required to built orderable grid."
     },
     "extra": {

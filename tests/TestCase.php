@@ -1,34 +1,28 @@
 <?php
 
+use Encore\Admin\AdminServiceProvider;
+use Encore\Admin\Facades\Admin;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
+use Orchestra\Testbench\BrowserKit\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
     protected $baseUrl = 'http://localhost:8000';
 
     /**
-     * Boots the application.
-     *
-     * @return \Illuminate\Foundation\Application
+     * Testbench が組み立てるアプリケーションに、laravel-admin を登録する。
      */
-    public function createApplication()
+    protected function getPackageProviders($app)
     {
-        $app = require __DIR__.'/../vendor/laravel/laravel/bootstrap/app.php';
+        return [AdminServiceProvider::class];
+    }
 
-        $app->booting(function () {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Admin', \Encore\Admin\Facades\Admin::class);
-        });
-
-        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-        $app->register('Encore\Admin\AdminServiceProvider');
-
-        return $app;
+    protected function getPackageAliases($app)
+    {
+        return ['Admin' => Admin::class];
     }
 
     protected function setUp(): void
@@ -38,6 +32,7 @@ class TestCase extends BaseTestCase
         $adminConfig = require __DIR__.'/config/admin.php';
 
         $this->app['config']->set('database.default', env('DB_CONNECTION', 'mysql'));
+        $this->app['config']->set('database.connections.sqlite.database', env('DB_DATABASE', ':memory:'));
         $this->app['config']->set('database.connections.mysql.host', env('MYSQL_HOST', 'localhost'));
         $this->app['config']->set('database.connections.mysql.database', env('MYSQL_DATABASE', 'laravel_admin_test'));
         $this->app['config']->set('database.connections.mysql.username', env('MYSQL_USER', 'root'));
@@ -56,6 +51,8 @@ class TestCase extends BaseTestCase
 
         $this->artisan('admin:install');
 
+        $this->registerApplicationAutoloader();
+
         $this->migrateTestTables();
 
         if (file_exists($routes = admin_path('routes.php'))) {
@@ -63,8 +60,6 @@ class TestCase extends BaseTestCase
         }
 
         require __DIR__.'/routes.php';
-
-        require __DIR__.'/seeds/factory.php';
 
 //        \Encore\Admin\Admin::$css = [];
 //        \Encore\Admin\Admin::$js = [];
@@ -80,6 +75,34 @@ class TestCase extends BaseTestCase
         DB::select("delete from `migrations` where `migration` = '2016_01_04_173148_create_admin_tables'");
 
         parent::tearDown();
+    }
+
+    /**
+     * admin:install が Testbench のアプリケーションに生成する App\\ 配下のクラス
+     * （App\\Admin\\Controllers\\HomeController など）を読み込めるようにする。
+     * Testbench のアプリケーションは Composer の自動読み込みの対象外のため。
+     */
+    protected function registerApplicationAutoloader()
+    {
+        static $registered = false;
+
+        if ($registered) {
+            return;
+        }
+
+        spl_autoload_register(function ($class) {
+            if (strncmp($class, 'App\\', 4) !== 0) {
+                return;
+            }
+
+            $file = app_path(str_replace('\\', '/', substr($class, 4)).'.php');
+
+            if (is_file($file)) {
+                require_once $file;
+            }
+        });
+
+        $registered = true;
     }
 
     /**
