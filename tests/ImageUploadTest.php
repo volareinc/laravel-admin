@@ -64,7 +64,8 @@ class ImageUploadTest extends TestCase
             $this->assertFileExists(public_path('uploads/'.$images['image'.$index]));
         }
 
-        $this->assertFileExists(public_path('uploads/images/asdasdasdasdasd.jpeg'));
+        // 拡張子は Symfony Mime の推定による（image/jpeg は現在 jpg と推定される）
+        $this->assertStringStartsWith('images/asdasdasdasdasd.', $images['image5']);
 
         File::cleanDirectory(public_path('uploads/images'));
     }

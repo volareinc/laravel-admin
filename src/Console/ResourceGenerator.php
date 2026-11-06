@@ -21,14 +21,26 @@ class ResourceGenerator
     ];
 
     /**
+     * Map database native column types to the types used to choose form fields.
+     *
+     * Laravel 11 removed Doctrine DBAL, so `Schema::getColumns()` returns native type
+     * names (e.g. `varchar`, `tinyint`). This keeps the generated code the same as
+     * when DBAL abstract types (e.g. `string`, `boolean`) were used.
+     * Types not listed here are treated as `string`.
+     *
      * @var array
      */
-    private $doctrineTypeMapping = [
-        'string' => [
-            'enum', 'geometry', 'geometrycollection', 'linestring',
-            'polygon', 'multilinestring', 'multipoint', 'multipolygon',
-            'point',
-        ],
+    protected $columnTypeMapping = [
+        'boolean'  => ['bool', 'boolean', 'tinyint'],
+        'json'     => ['json', 'jsonb'],
+        'integer'  => ['smallint', 'mediumint', 'int', 'integer', 'bigint', 'int2', 'int4', 'int8'],
+        'decimal'  => ['decimal', 'numeric', 'money'],
+        'float'    => ['float', 'double', 'real', 'float4', 'float8', 'double precision'],
+        'datetime' => ['datetime', 'datetime2', 'timestamp', 'timestamptz', 'timestamp without time zone', 'timestamp with time zone'],
+        'date'     => ['date', 'year'],
+        'time'     => ['time', 'timetz', 'time without time zone', 'time with time zone'],
+        'text'     => ['text', 'tinytext', 'mediumtext', 'longtext', 'ntext'],
+        'blob'     => ['blob', 'tinyblob', 'mediumblob', 'longblob', 'binary', 'varbinary', 'bytea'],
     ];
 
     /**
@@ -83,12 +95,12 @@ class ResourceGenerator
         $output = '';
 
         foreach ($this->getTableColumns() as $column) {
-            $name = $column->getName();
+            $name = $column['name'];
             if (in_array($name, $reservedColumns)) {
                 continue;
             }
-            $type = $column->getType()->getName();
-            $default = $column->getDefault();
+            $type = $this->getColumnType($column);
+            $default = $column['default'];
 
             $defaultValue = '';
 
@@ -166,7 +178,7 @@ class ResourceGenerator
         $output = '';
 
         foreach ($this->getTableColumns() as $column) {
-            $name = $column->getName();
+            $name = $column['name'];
 
             // set column label
             $label = $this->formatLabel($name);
@@ -184,7 +196,7 @@ class ResourceGenerator
         $output = '';
 
         foreach ($this->getTableColumns() as $column) {
-            $name = $column->getName();
+            $name = $column['name'];
             $label = $this->formatLabel($name);
 
             $output .= sprintf($this->formats['grid_column'], $name, $label);
@@ -207,37 +219,33 @@ class ResourceGenerator
     /**
      * Get columns of a giving model.
      *
-     * @throws \Exception
-     *
-     * @return \Doctrine\DBAL\Schema\Column[]
+     * @return array<int, array{name: string, type_name: string, type: string, nullable: bool, default: mixed}>
      */
     protected function getTableColumns()
     {
-        if (!$this->model->getConnection()->isDoctrineAvailable()) {
-            throw new \Exception(
-                'You need to require doctrine/dbal: ~2.3 in your own composer.json to get database columns. '
-            );
-        }
+        return $this->model->getConnection()
+            ->getSchemaBuilder()
+            ->getColumns($this->model->getTable());
+    }
 
-        $table = $this->model->getConnection()->getTablePrefix().$this->model->getTable();
-        /** @var \Doctrine\DBAL\Schema\MySqlSchemaManager $schema */
-        $schema = $this->model->getConnection()->getDoctrineSchemaManager($table);
+    /**
+     * Get the type used to choose a form field for a column.
+     *
+     * @param array $column
+     *
+     * @return string
+     */
+    protected function getColumnType(array $column)
+    {
+        $typeName = strtolower($column['type_name']);
 
-        // custom mapping the types that doctrine/dbal does not support
-        $databasePlatform = $schema->getDatabasePlatform();
-
-        foreach ($this->doctrineTypeMapping as $doctrineType => $dbTypes) {
-            foreach ($dbTypes as $dbType) {
-                $databasePlatform->registerDoctrineTypeMapping($dbType, $doctrineType);
+        foreach ($this->columnTypeMapping as $type => $typeNames) {
+            if (in_array($typeName, $typeNames, true)) {
+                return $type;
             }
         }
 
-        $database = null;
-        if (strpos($table, '.')) {
-            list($database, $table) = explode('.', $table);
-        }
-
-        return $schema->listTableColumns($table, $database);
+        return 'string';
     }
 
     /**

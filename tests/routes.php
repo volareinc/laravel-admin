@@ -10,3 +10,8 @@ Route::group([
     $router->resource('files', FileController::class);
     $router->resource('users', UserController::class);
 });
+
+// Testbench のアプリケーションにはトップページのルートが無いので、Laravel の初期画面を返すルートを足す
+Route::get('/', function () {
+    return view('welcome');
+});
